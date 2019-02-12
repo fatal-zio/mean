@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.1.
 
-## Mean Definition
+## Definition
 
 https://en.wikipedia.org/wiki/MEAN_(software_bundle)
 
