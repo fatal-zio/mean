@@ -1,6 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Post = require('./models/post');
+
 const app = express();
+
+mongoose
+  .connect('mongodb://localhost/MEAN')
+  .then(() => {
+    console.log('Connection successful!');
+  })
+  .catch(() => {
+    console.log('Connection failed!');
+  });
 
 app.use(bodyParser.json());
 
@@ -18,37 +30,22 @@ app.use((req, res, next) => {
 });
 
 app.post('/api/posts', (req, res, next) => {
-  const post = req.body;
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save();
   res.status(201).json({
     message: 'Post added successfully.'
   });
 });
 
 app.get('/api/posts', (req, res, next) => {
-  const posts = [
-    {
-      id: 'sdfnsdklfa',
-      title: 'First post from Node.',
-      content:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. First one.'
-    },
-    {
-      id: 'asdflasdlfn',
-      title: 'Second post from Node.',
-      content:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. This is the second one.'
-    },
-    {
-      id: 'knlajknvxc',
-      title: 'Third post from Node.',
-      content:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Third one.'
-    }
-  ];
-
-  return res.status(200).json({
-    message: 'Posts retrieved!',
-    posts: posts
+  Post.find().then(posts => {
+    res.status(200).json({
+      message: 'Posts retrieved!',
+      posts: posts
+    });
   });
 });
 
