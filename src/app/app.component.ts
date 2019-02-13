@@ -9,7 +9,7 @@ import { Post } from './shared/models/post';
 export class AppComponent {
   public posts: Post[] = [];
 
-  public onPostAdded(post: Post) {
+  public onPostAdded(post: Post): void {
     this.posts.push(post);
   }
 }
