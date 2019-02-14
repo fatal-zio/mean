@@ -38,8 +38,9 @@ export class PostsService {
 
   public addPost(post: Post): void {
     this.http
-      .post<{ message: string }>(this.url, post)
+      .post<{ message: string, postId: string }>(this.url, post)
       .subscribe(responseData => {
+        post.id = responseData.postId;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
