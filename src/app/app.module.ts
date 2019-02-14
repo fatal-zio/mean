@@ -17,6 +17,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { PostListComponent } from './features/posts/post-list/post-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorService } from './core/services/error.service';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ErrorService } from './core/services/error.service';
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
     MatInputModule,

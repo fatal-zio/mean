@@ -36,14 +36,29 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
+  public getPost(id: string) {
+    return this.http.get<{ _id: string; title: string; content: string }>(
+      this.url + '/' + id
+    );
+  }
+
   public addPost(post: Post): void {
     this.http
-      .post<{ message: string, postId: string }>(this.url, post)
+      .post<{ message: string; postId: string }>(this.url, post)
       .subscribe(responseData => {
         post.id = responseData.postId;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
+  }
+
+  public updatePost(post: Post) {
+    this.http.put(this.url + '/' + post.id, post).subscribe(response => {
+      const updatedPosts = [...this.posts];
+      updatedPosts[updatedPosts.findIndex(o => o.id === post.id)] = post;
+      this.posts = updatedPosts;
+      this.postsUpdated.next([...this.posts]);
+    });
   }
 
   public deletePost(postId: string) {
