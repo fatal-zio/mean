@@ -12,7 +12,9 @@ export class PostsService {
   private postsUpdated = new Subject<Post[]>();
   private url = 'http://localhost:3000/api/posts';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  public getPosts() {
     this.http
       .get<{ message: string; posts: any }>(this.url)
       .pipe(
@@ -32,7 +34,7 @@ export class PostsService {
       });
   }
 
-  public getPosts(): Observable<Post[]> {
+  public getPostsObservable(): Observable<Post[]> {
     return this.postsUpdated.asObservable();
   }
 
