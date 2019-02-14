@@ -44,4 +44,11 @@ export class PostsService {
         this.postsUpdated.next([...this.posts]);
       });
   }
+
+  public deletePost(postId: string) {
+    return this.http.delete(this.url + '/' + postId).subscribe(() => {
+      this.posts = this.posts.filter(o => o.id !== postId);
+      this.postsUpdated.next([...this.posts]);
+    });
+  }
 }
