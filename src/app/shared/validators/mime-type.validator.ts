@@ -8,7 +8,7 @@ export const mimeType = (
     [key: string]: any;
   }> = new Observable<{ [key: string]: any }>();
 
-  if (!control.value) {
+  if (!control.value || typeof control.value === 'string') {
     return fileReaderObservable;
   }
 

@@ -64,10 +64,42 @@ export class PostsService {
       });
   }
 
-  public updatePost(post: Post) {
-    this.http.put(this.url + '/' + post.id, post).subscribe(response => {
+  public updatePost(
+    id: string,
+    title: string,
+    content: string,
+    image: File | string
+  ) {
+    let postData: Post | FormData;
+
+    if (typeof (image === 'object')) {
+      postData = new FormData();
+      postData.append('id', id);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
+    } else if (typeof image === 'string') {
+      postData = {
+        id,
+        title,
+        content,
+        imagePath: image
+      };
+    }
+
+    this.http.put(this.url + '/' + id, postData).subscribe((response: any) => {
+      console.log(response);
+
+      const post: Post = {
+        id: response.post._id,
+        title: response.post.title,
+        content: response.post.content,
+        imagePath: response.post.imagePath
+      };
       const updatedPosts = [...this.posts];
-      updatedPosts[updatedPosts.findIndex(o => o.id === post.id)] = post;
+      const index = updatedPosts.findIndex(o => o.id === id);
+
+      updatedPosts[index] = post;
       this.posts = updatedPosts;
       this.postsUpdated.next([...this.posts]);
     });
