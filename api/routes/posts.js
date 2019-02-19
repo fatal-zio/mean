@@ -28,18 +28,31 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post('', multer(storage).single('image'), (req, res, next) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content
-  });
-  post.save().then(result => {
-    res.status(201).json({
-      message: 'Post added successfully.',
-      postId: result._id
+router.post(
+  '',
+  multer({ storage: storage }).single('image'),
+  (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
+    const imagePath = req.file.filename
+      ? url + '/images/' + req.file.filename
+      : null;
+
+    const post = new Post({
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: imagePath
     });
-  });
-});
+    post.save().then(createdPost => {
+      res.status(201).json({
+        message: 'Post added successfully.',
+        post: {
+          ...createdPost,
+          id: createdPost._id
+        }
+      });
+    });
+  }
+);
 
 router.get('', (req, res, next) => {
   Post.find().then(posts => {

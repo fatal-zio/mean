@@ -4,9 +4,18 @@ import { Observable, Observer } from 'rxjs';
 export const mimeType = (
   control: AbstractControl
 ): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {
+  let fileReaderObservable: Observable<{
+    [key: string]: any;
+  }> = new Observable<{ [key: string]: any }>();
+
+  if (!control.value) {
+    return fileReaderObservable;
+  }
+
   const file = control.value as File;
   const fileReader = new FileReader();
-  const fileReaderObservable = Observable.create(
+
+  fileReaderObservable = Observable.create(
     (observer: Observer<{ [key: string]: any }>) => {
       fileReader.addEventListener('loadend', () => {
         const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(

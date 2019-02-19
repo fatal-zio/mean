@@ -16,14 +16,15 @@ export class PostsService {
 
   public getPosts() {
     this.http
-      .get<{ message: string; posts: any }>(this.url)
+      .get<{ message: string; posts: Post[] }>(this.url)
       .pipe(
         map(postData => {
-          return postData.posts.map(post => {
+          return postData.posts.map((post: any) => {
             return {
               title: post.title,
               content: post.content,
-              id: post._id
+              id: post._id,
+              imagePath: post.imagePath
             };
           });
         })
@@ -39,16 +40,25 @@ export class PostsService {
   }
 
   public getPost(id: string) {
-    return this.http.get<{ _id: string; title: string; content: string }>(
-      this.url + '/' + id
-    );
+    return this.http.get<{
+      _id: string;
+      title: string;
+      content: string;
+      imagePath: string;
+    }>(this.url + '/' + id);
   }
 
-  public addPost(post: Post): void {
+  public addPost(post: Post, image: File): void {
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image, post.title);
+
     this.http
-      .post<{ message: string; postId: string }>(this.url, post)
+      .post<{ message: string; post: Post }>(this.url, postData)
       .subscribe(responseData => {
-        post.id = responseData.postId;
+        post.id = responseData.post.id;
+        post.imagePath = responseData.post.imagePath;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
