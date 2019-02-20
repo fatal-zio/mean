@@ -30,7 +30,12 @@
         >Please enter a valid password.</mat-error
       >
     </mat-form-field>
-    <button color="primary" mat-raised-button type="submit">
+    <button
+      color="primary"
+      mat-raised-button
+      type="submit"
+      [disabled]="signupForm.invalid"
+    >
       Signup
     </button>
   </form>
