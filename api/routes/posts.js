@@ -55,12 +55,30 @@ router.post(
 );
 
 router.get('', (req, res, next) => {
-  Post.find().then(posts => {
-    res.status(200).json({
-      message: 'Posts retrieved!',
-      posts: posts
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.currentpage;
+  const postQuery = Post.find();
+  let fetchedPosts;
+
+  console.log('pageSize is ' + pageSize);
+  console.log('currentPage is ' + currentPage);
+
+  if (pageSize && currentPage) {
+    postQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+
+  postQuery
+    .then(posts => {
+      fetchedPosts = posts;
+      return Post.count();
+    })
+    .then(count => {
+      res.status(200).json({
+        message: 'Posts retrieved!',
+        posts: fetchedPosts,
+        maxPosts: count
+      });
     });
-  });
 });
 
 router.get('/:id', (req, res, next) => {
