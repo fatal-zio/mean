@@ -17,11 +17,12 @@ import { PostCreateComponent } from './features/posts/post-create/post-create.co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './shared/header/header.component';
 import { PostListComponent } from './features/posts/post-list/post-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorService } from './core/services/error.service';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './features/auth/login/login.component';
 import { SignupComponent } from './features/auth/signup/signup.component';
+import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,11 @@ import { SignupComponent } from './features/auth/signup/signup.component';
     {
       provide: ErrorHandler,
       useClass: ErrorService
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

@@ -7,8 +7,13 @@ import { AuthData } from '../../shared/models/auth-data';
 })
 export class AuthService {
   private url = 'http://localhost:3000/api/users';
+  private token: string;
 
   constructor(private http: HttpClient) {}
+
+  getToken(): string {
+    return this.token;
+  }
 
   createUser(email: string, password: string) {
     const authData: AuthData = { email, password };
@@ -19,8 +24,10 @@ export class AuthService {
 
   login(email: string, password: string) {
     const authData: AuthData = { email, password };
-    this.http.post(this.url + '/login', authData).subscribe(response => {
-      console.log(response);
-    });
+    this.http
+      .post<{ token: string }>(this.url + '/login', authData)
+      .subscribe(response => {
+        this.token = response.token;
+      });
   }
 }
