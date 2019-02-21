@@ -100,7 +100,8 @@ export class PostsService {
         id,
         title,
         content,
-        imagePath: image
+        imagePath: image,
+        creator: undefined
       };
     }
 
@@ -111,7 +112,8 @@ export class PostsService {
           id: response.post._id,
           title: response.post.title,
           content: response.post.content,
-          imagePath: response.post.imagePath
+          imagePath: response.post.imagePath,
+          creator: response.post.creator
         };
         const updatedPosts = [...this.posts];
         const index = updatedPosts.findIndex(o => o.id === id);
