@@ -8,7 +8,6 @@ import { Subject, Observable } from 'rxjs';
 })
 export class AuthService {
   private url = 'http://localhost:3000/api/users';
-  private token: string;
   private isAuthenticated = false;
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: any;
@@ -16,7 +15,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   getToken(): string {
-    return this.token;
+    return localStorage.getItem('token');
   }
 
   getIsAuthenticated(): boolean {
@@ -27,11 +26,26 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
+  autoAuthUser(): void {
+    const localAuthData = this.getLocalAuthData();
+
+    if (!localAuthData) {
+      return;
+    }
+
+    const now = new Date();
+    if (localAuthData.expirationDate > now) {
+      this.isAuthenticated = true;
+      this.setTokenTimer(
+        (localAuthData.expirationDate.getTime() - now.getTime()) / 1000
+      );
+      this.authStatusListener.next(true);
+    }
+  }
+
   createUser(email: string, password: string) {
     const authData: AuthData = { email, password };
-    this.http.post(this.url + '/signup', authData).subscribe(response => {
-      console.log(response);
-    });
+    this.http.post(this.url + '/signup', authData).subscribe(response => {});
   }
 
   login(email: string, password: string) {
@@ -41,17 +55,17 @@ export class AuthService {
       .subscribe(response => {
         if (response.token) {
           this.setTokenTimer(response.expiresIn);
-          this.token = response.token;
           this.isAuthenticated = true;
+          this.saveAuthData(response.token, response.expiresIn);
           this.authStatusListener.next(true);
         }
       });
   }
 
   logout(): void {
-    this.token = null;
     this.isAuthenticated = false;
     clearTimeout(this.tokenTimer);
+    this.clearAuthData();
     this.authStatusListener.next(false);
   }
 
@@ -59,5 +73,34 @@ export class AuthService {
     this.tokenTimer = setTimeout(() => {
       this.logout();
     }, expireDurationInSeconds * 1000);
+  }
+
+  private saveAuthData(token: string, expireDurationInSeconds: number): void {
+    const now = new Date();
+    const expirationDate = new Date(
+      now.getTime() + expireDurationInSeconds * 1000
+    );
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+
+  private clearAuthData(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+  }
+
+  private getLocalAuthData(): { token: string; expirationDate: Date } {
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('expiration');
+
+    if (token && expirationDate) {
+      return {
+        token,
+        expirationDate: new Date(expirationDate)
+      };
+    }
+
+    return;
   }
 }
