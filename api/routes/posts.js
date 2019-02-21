@@ -42,7 +42,8 @@ router.post(
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      imagePath: imagePath
+      imagePath: imagePath,
+      creator: req.userData.userId
     });
     post.save().then(createdPost => {
       res.status(201).json({
