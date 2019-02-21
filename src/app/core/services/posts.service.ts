@@ -104,23 +104,25 @@ export class PostsService {
       };
     }
 
-    this.http.put(this.url + '/' + id, postData).subscribe((response: any) => {
-      const post: Post = {
-        id: response.post._id,
-        title: response.post.title,
-        content: response.post.content,
-        imagePath: response.post.imagePath
-      };
-      const updatedPosts = [...this.posts];
-      const index = updatedPosts.findIndex(o => o.id === id);
+    this.http
+      .put(this.url + '/' + id, postData)
+      .subscribe((response: { message: string; post: any }) => {
+        const post: Post = {
+          id: response.post._id,
+          title: response.post.title,
+          content: response.post.content,
+          imagePath: response.post.imagePath
+        };
+        const updatedPosts = [...this.posts];
+        const index = updatedPosts.findIndex(o => o.id === id);
 
-      updatedPosts[index] = post;
-      this.posts = updatedPosts;
-      this.postsUpdated.next({
-        posts: [...this.posts],
-        postCount: updatedPosts.length
+        updatedPosts[index] = post;
+        this.posts = updatedPosts;
+        this.postsUpdated.next({
+          posts: [...this.posts],
+          postCount: updatedPosts.length
+        });
       });
-    });
   }
 
   public deletePost(postId: string) {

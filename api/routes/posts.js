@@ -108,15 +108,28 @@ router.put(
       content: req.body.content,
       imagePath: imagePath
     };
-    Post.updateOne({ _id: req.params.id }, post).then(result => {
-      res.status(200).json({ post: post });
+    Post.updateOne(
+      { _id: req.params.id, creator: req.userData.userId },
+      post
+    ).then(result => {
+      if (result.nModified > 0) {
+        res.status(200).json({ message: 'Update successful.', post: post });
+      } else {
+        res.status(401).json({ message: 'Update failed.', post: post });
+      }
     });
   }
 );
 
 router.delete('/:id', checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then(
-    res.status(204).json({ message: 'Post deleted.' })
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(
+    result => {
+      if (result.nModified > 0) {
+        res.status(204).json({ message: 'Post deleted.' });
+      } else {
+        res.status(401).json({ message: 'Delete failed.' });
+      }
+    }
   );
 });
 
