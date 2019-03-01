@@ -21,14 +21,13 @@ export class ErrorService implements ErrorHandler {
         const errorMessage =
           specificErrors !== '' ? specificErrors : error.message;
 
-        this.snackBar.open(
-          errorMessage,
-          `${errorCode} : ${errorType}!`
-        );
+        this.snackBar.open(errorMessage, `${errorCode} : ${errorType}!`, {
+          duration: 3000
+        });
       }
     } else {
       // Handle Client Error (Angular Error, ReferenceError...)
-      this.snackBar.open(error.message, 'Error!');
+      this.snackBar.open(error.message, 'Error!', { duration: 3000 });
     }
 
     console.log(error);

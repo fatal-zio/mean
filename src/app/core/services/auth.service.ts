@@ -47,9 +47,9 @@ export class AuthService {
     }
   }
 
-  createUser(email: string, password: string): void {
+  createUser(email: string, password: string) {
     const authData: AuthData = { email, password };
-    this.http.post(this.url + '/signup', authData).subscribe(response => {});
+    return this.http.post(this.url + '/signup', authData);
   }
 
   login(email: string, password: string): void {

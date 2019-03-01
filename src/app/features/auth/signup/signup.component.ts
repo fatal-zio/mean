@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { ErrorService } from 'src/app/core/services/error.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,7 +12,11 @@ import { Router } from '@angular/router';
 export class SignupComponent implements OnInit {
   public isLoading = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private errorService: ErrorService
+  ) {}
 
   ngOnInit() {}
 
@@ -21,7 +26,16 @@ export class SignupComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.authService.createUser(form.value.email, form.value.password);
-    this.router.navigate(['/']);
+    this.authService
+      .createUser(form.value.email, form.value.password)
+      .subscribe(
+        () => {
+          this.router.navigate(['/']);
+        },
+        error => {
+          this.isLoading = false;
+          this.errorService.handleError(error);
+        }
+      );
   }
 }
