@@ -35,8 +35,8 @@ export class ErrorService implements ErrorHandler {
 
   private getSpecificErrors(error): string {
     if (error) {
-      if (error.EmailAddress) {
-        return error.EmailAddress;
+      if (error.message === 'Authentication failed.') {
+        return error.message;
       }
     }
 
