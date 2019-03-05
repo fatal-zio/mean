@@ -4,7 +4,6 @@
 /dist
 /tmp
 /out-tsc
-/api/images
 
 # dependencies
 /node_modules
@@ -39,6 +38,8 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+*.jpg
+*.png
 
 # System Files
 .DS_Store
