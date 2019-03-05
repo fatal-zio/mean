@@ -6,7 +6,7 @@ import {
   Router
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
     const isAuthenticated = this.authService.getIsAuthenticated();
 
     if (!isAuthenticated) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
     }
 
     return isAuthenticated;
