@@ -1,10 +1,8 @@
-const express = require('express');
 const bcrypt = require('bcryptjs');
-const router = express.Router();
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-router.post('/signup', (req, res, next) => {
+exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then(hash => {
     const user = new User({
       email: req.body.email,
@@ -24,9 +22,9 @@ router.post('/signup', (req, res, next) => {
         });
       });
   });
-});
+};
 
-router.post('/login', (req, res, next) => {
+exports.userLogin = (req, res, next) => {
   let fetchedUser;
   User.findOne({ email: req.body.email })
     .then(user => {
@@ -61,6 +59,4 @@ router.post('/login', (req, res, next) => {
         message: 'Authentication failed.'
       });
     });
-});
-
-module.exports = router;
+};
