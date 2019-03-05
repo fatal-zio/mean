@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { AuthData } from '../../shared/models/auth-data';
 import { Subject, Observable } from 'rxjs';
 import { ErrorService } from './error.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private url = 'http://localhost:3000/api/users';
+  private url = environment.apiUrl + '/users';
   private isAuthenticated = false;
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: any;

@@ -3,6 +3,7 @@ import { Post } from '../../shared/models/post';
 import { Subject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { map } from 'rxjs/operators';
 export class PostsService {
   private posts: Post[] = [];
   private postsUpdated = new Subject<{ posts: Post[]; postCount: number }>();
-  private url = 'http://localhost:3000/api/posts';
+  private url = environment.apiUrl + '/posts';
 
   constructor(private http: HttpClient) {}
 
