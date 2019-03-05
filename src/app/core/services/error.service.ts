@@ -34,13 +34,7 @@ export class ErrorService implements ErrorHandler {
   }
 
   private getSpecificErrors(error): string {
-    if (error) {
-      if (error.message === 'Authentication failed.') {
-        return error.message;
-      }
-    }
-
-    return '';
+    return error.message ? error.message : '';
   }
 
   private resolveErrorCode(code: number): string {

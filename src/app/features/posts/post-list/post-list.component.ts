@@ -4,6 +4,7 @@ import { PostsService } from '../../../core/services/posts.service';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { ErrorService } from 'src/app/core/services/error.service';
 
 @Component({
   selector: 'app-post-list',
@@ -24,7 +25,8 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   constructor(
     private postService: PostsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -50,9 +52,15 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   onDelete(postId: string): void {
     this.isLoading = true;
-    this.postService.deletePost(postId).subscribe(() => {
-      this.postService.getPosts(this.postsPerPage, this.currentPage);
-    });
+    this.postService.deletePost(postId).subscribe(
+      () => {
+        this.postService.getPosts(this.postsPerPage, this.currentPage);
+      },
+      error => {
+        this.isLoading = false;
+        this.errorService.handleError(error);
+      }
+    );
   }
 
   ngOnDestroy(): void {
