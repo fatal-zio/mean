@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthData } from '../../shared/models/auth-data';
 import { Subject, Observable } from 'rxjs';
+import { ErrorService } from './error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private errorService: ErrorService) {}
 
   getToken(): string {
     return localStorage.getItem('token');
@@ -59,18 +60,24 @@ export class AuthService {
         this.url + '/login',
         authData
       )
-      .subscribe(response => {
-        if (response.token) {
-          this.setTokenTimer(response.expiresIn);
-          this.isAuthenticated = true;
-          this.saveAuthData(
-            response.token,
-            response.expiresIn,
-            response.userId
-          );
-          this.authStatusListener.next(true);
+      .subscribe(
+        response => {
+          if (response.token) {
+            this.setTokenTimer(response.expiresIn);
+            this.isAuthenticated = true;
+            this.saveAuthData(
+              response.token,
+              response.expiresIn,
+              response.userId
+            );
+            this.authStatusListener.next(true);
+          }
+        },
+        error => {
+          this.errorService.handleError(error);
+          this.authStatusListener.next(false);
         }
-      });
+      );
   }
 
   logout(): void {

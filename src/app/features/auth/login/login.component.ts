@@ -16,14 +16,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe(isAuthenticated => {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      isAuthenticated => {
+        this.isLoading = false;
         if (isAuthenticated) {
-          this.isLoading = false;
           this.router.navigate(['/']);
         }
-      });
+      },
+      error => {
+        this.isLoading = false;
+      }
+    );
   }
 
   onLogin(form: NgForm) {
