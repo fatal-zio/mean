@@ -8,8 +8,16 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
+// if using local
+// const connectionString = 'mongodb://localhost/MEAN';
+
+const encodedConnectionString =
+  'bW9uZ29kYitzcnY6Ly9hZG1pbjpJcmVuZUxldzVAY2x1c3RlcjAtaWNkeHoubW9uZ29kYi5uZXQvbWVhbj9yZXRyeVdyaXRlcz10cnVl';
+const buff = new Buffer.from(encodedConnectionString, 'base64');
+const connectionString = buff.toString('ascii');
+
 mongoose
-  .connect('mongodb://localhost/MEAN')
+  .connect(connectionString)
   .then(() => {
     console.log('Connection successful!');
   })
