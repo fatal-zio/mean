@@ -8,12 +8,7 @@ const userRoutes = require('./routes/user-routes');
 
 const app = express();
 
-// if using local
-// const connectionString = 'mongodb://localhost/MEAN';
-
-const encodedConnectionString =
-  'bW9uZ29kYitzcnY6Ly9hZG1pbjpJcmVuZUxldzVAY2x1c3RlcjAtaWNkeHoubW9uZ29kYi5uZXQvbWVhbj9yZXRyeVdyaXRlcz10cnVl';
-const buff = new Buffer.from(encodedConnectionString, 'base64');
+const buff = new Buffer.from(process.env.MONGO_CONNECT_STRING, 'base64');
 const connectionString = buff.toString('ascii');
 
 mongoose
