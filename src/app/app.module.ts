@@ -10,7 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
 import { MaterialModule } from './material.module';
 import { PostsModule } from './features/posts/posts.module';
-import { AuthModule } from './features/auth/auth.module';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
@@ -20,7 +19,6 @@ import { AuthModule } from './features/auth/auth.module';
     BrowserAnimationsModule,
     MaterialModule,
     PostsModule,
-    AuthModule,
     HttpClientModule
   ],
   providers: [
